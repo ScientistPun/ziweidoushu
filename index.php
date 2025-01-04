@@ -60,13 +60,13 @@ echo '</pre>';
     <style>
         .grid{
             padding: 20px 10px;
-            width: 640px;
+            width: 590px;
             margin:0px auto 400px;
         }
         .grid .grid-item{
             float: left;
             border: 1px solid #000;
-            height: 188px;
+            height: 208px;
             width: 138px;
             border-left: none;
             border-bottom: none;
@@ -78,7 +78,7 @@ echo '</pre>';
             border-bottom: 1px solid #000;
         }
         .grid-item-desc{color: #0000aa;}
-        .star{width: 14px; margin: 1px; display: inline-block; float: right; font-size: 13px;}
+        .star{width: 14px; margin-left: 1px; display: inline-block; float: right; font-size: 13px;}
         .master-star{color: red;}
         .lucky-star{color:#7100bc;}
         .unlucky-star{color: #2f363c;}
@@ -182,7 +182,7 @@ echo '</pre>';
                                 $place = $places[$r][$c];
 
                                 echo '<tr style="vertical-align:top;">';
-                                echo '<td style="text-align: right;" colspan="2">';
+                                echo '<td style="text-align: right; height: 112px;" colspan="3">';
                                 if (is_array($place['stars']['masterStars'])) {
                                     foreach ($place['stars']['masterStars'] as $star) {
                                         echo "<span class='master-star star'>{$star['name']} <small class='layui-font-12 layui-font-gray'>{$star['brightSubTitle']}</small>";
@@ -227,27 +227,48 @@ echo '</pre>';
                                 }
                                 if (is_array($place['stars']['otherStars'])) {
                                     foreach ($place['stars']['otherStars'] as $star) {
-                                        echo "<span class='other-star star'>{$star['name']} <small class='layui-font-12 layui-font-gray'>{$star['brightSubTitle']}</small></span>";
+                                        echo "<span class='other-star star'>{$star['name']}</span>";
                                     }
                                 }
                                 echo '</td>'; 
-                                echo '</tr><tr style="vertical-align:middle;">';
+                                echo '</tr><tr style="vertical-align:top;">';
                                 echo '<td>';
                                 echo ($mingPan['laiYinZhi'] == $place['diZhi'] ? '<span class="layui-font-14 layui-border">来因</span>':'');
                                 echo ($mingPan['shenPlaceZhi'] == $place['diZhi'] ? '<span class="layui-font-14 layui-border-red">身宫</span>':'');
                                 echo '</td>';
-                                echo '<td style="text-align: right;">';
+                                echo '<td style="text-align: right;" colspan="2">';
+                                echo "<span class='layui-font-12 grid-item-desc'>{$place['daXian']['begin']}-{$place['daXian']['end']}</span><br/>";
                                 echo '</td>';
                                 echo '</tr><tr style="vertical-align:bottom;">';
-                                echo '<td>';
+                                echo '<td style="text-align:left;">';
+                                if (is_array($place['stars']['boShiStars'])) {
+                                    foreach ($place['stars']['boShiStars'] as $star) {
+                                        echo "<span class='layui-font-12' style='color:#82a6a3;'>{$star['name']}</span><br/>";
+                                    }
+                                }
+                                if (is_array($place['stars']['jiangQianStars'])) {
+                                    foreach ($place['stars']['jiangQianStars'] as $star) {
+                                        echo "<span class='layui-font-12' style='color:#aaa;'>{$star['name']}</span><br/>";
+                                    }
+                                }
+                                if (is_array($place['stars']['suiQianStars'])) {
+                                    foreach ($place['stars']['suiQianStars'] as $star) {
+                                        echo "<span class='layui-font-12' style='color:#aaa;'>{$star['name']}</span><br/>";
+                                    }
+                                }
+                                echo '</td><td style="text-align:right;">';
                                 echo "<span class='layui-font-14 layui-font-blue'>{$place['yearPlace']}</span><br/>";
                                 echo "<span class='layui-font-14 layui-font-green'>{$place['dxPlace']}</span><br/>";
 
-                                echo '<b class="layui-font-14 '.($mingPan['mingGong']['zhi'] == $place['diZhi'] ? ' layui-badge':' layui-bg-gray').' ">[' . $place['name'].']</b>';
+                                echo '<b class="layui-font-14 '.($mingPan['mingGong']['zhi'] == $place['diZhi'] ? ' layui-badge':' layui-bg-gray').' ">' . $place['name'].'</b>';
                                 echo '</td>';
                                 echo '<td style="text-align:right;">';
-                                echo "<span class='layui-font-12 grid-item-desc'>{$place['daXian']['begin']}-{$place['daXian']['end']}</span><br/>";
-                                echo '<span class="layui-font-16">'.$place['tianGan'].'<br>'.$place['diZhi'].'</span> <td>';
+                                if (is_array($place['stars']['changShengStars'])) {
+                                    foreach ($place['stars']['changShengStars'] as $star) {
+                                        echo "<span class='layui-font-12' style='color: #aaa;'>{$star['name']}</span><br/>";
+                                    }
+                                }
+                                echo '<span class="layui-font-16" style="color: #777;">'.$place['tianGan'].'<br/>'.$place['diZhi'].'</span> <td>';
                                 echo '</tr>';
 
                             }

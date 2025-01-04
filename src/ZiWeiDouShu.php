@@ -19,7 +19,7 @@ use scientistpun\ziwei\util\Utils;
  */
 class ZiWeiDouShu {
     // 十二宫名称
-    private const PLACE_NAME = ["命宫", "兄弟宫", "夫妻宫", "子女宫", "财帛宫", "疾厄宫", "迁移宫", "仆役宫", "官禄宫", "田宅宫", "福德宫", "父母宫"];
+    private const PLACE_NAME = ["命宫", "兄弟", "夫妻", "子女", "财帛", "疾厄", "迁移", "仆役", "官禄", "田宅", "福德", "父母"];
 
     private Lunar $lunar;
     private LunarTime $lunarTime;
@@ -44,7 +44,6 @@ class ZiWeiDouShu {
     private array $gongGan;
     // 五行
     private WuXing $wuXing;
-    private string $naYin;
 
     // 紫微星曜
     private Stars $stars;
@@ -136,7 +135,7 @@ class ZiWeiDouShu {
     /**
      * 立身宫
      */
-    private const SHEN_PLACE = ["命宫", "福德宫", "官禄宫", "迁移宫", "财帛宫", "夫妻宫"];
+    private const SHEN_PLACE = ["命宫", "福德", "官禄", "迁移", "财帛", "夫妻"];
     private function calculateShenPlace() {
         $this->shenPlace = self::SHEN_PLACE[$this->lunarTime->getZhiIndex() % 6];
         $this->shenPlacePos = array_search($this->shenPlace, $this->twelvePlace);
@@ -162,7 +161,7 @@ class ZiWeiDouShu {
      * 定星曜
      */
     private function setStars() {
-        $this->stars = Stars::from($this->lunar, $this->wuXing, $this->mingGong);
+        $this->stars = Stars::from($this->yinYang, $this->gender, $this->lunar, $this->wuXing, $this->mingGong);
     }
 
     /**
@@ -216,7 +215,11 @@ class ZiWeiDouShu {
                     'masterStars' => $stars['masterStars'][$i], 
                     'luckyStars' => $stars['luckyStars'][$i],
                     'unluckyStars' => $stars['unluckyStars'][$i],
-                    'otherStars' => $stars['otherStars'][$i]
+                    'otherStars' => $stars['otherStars'][$i],
+                    'boShiStars' => $stars['boShiStars'][$i],
+                    'changShengStars' => $stars['changShengStars'][$i],
+                    'jiangQianStars' => $stars['jiangQianStars'][$i],
+                    'suiQianStars' => $stars['suiQianStars'][$i],
                 ],
                 'daXian' => $daXianRange[$i],
             ];
