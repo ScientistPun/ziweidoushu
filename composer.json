@@ -1,0 +1,25 @@
+{
+    "name": "scientistpun/ziweidoushu",
+    "description": "紫微斗数排盘",
+    "type": "library",
+    "require": {
+        "6tail/lunar-php": "^1.3"
+    },
+    "require-dev": {
+        "6tail/lunar-php": "^1.3"
+    },
+    "license": "MIT",
+    "keywords": ["紫微斗数", "排盘", "占卜"],
+    "authors": [
+        {
+            "name": "Scientist Pun",
+            "email": "honynero@sina.cn"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "scientistpun\\ziwei\\": "src/"
+        }
+    },
+    "minimum-stability": "stable"
+}
