@@ -700,7 +700,7 @@ class Stars {
         $this->tianShi = Star::create('天使', $this->clockwiseMove($this->mingGong->getZhi(), 5), Star::TYPE_OTHER);
         
         // 旬空
-        $this->xunKong = Star::create('旬空', Utils::getIndexByZhi(self::XUN_KONG_PLACE[$yearGan.$yearZhi]), Star::TYPE_OTHER);
+        $this->xunKong = Star::create('旬空', Utils::getIndexByZhi(self::XUN_KONG_PLACE[$this->mingGong->getGanZhi()]), Star::TYPE_OTHER);
     }
 
     public function getOtherStars() {
