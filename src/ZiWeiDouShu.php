@@ -157,6 +157,10 @@ class ZiWeiDouShu {
         $this->wuXing = WuXing::fromGanZhi($this->mingGong->getGanZhi());
     }
 
+    public function getWuXing() {
+        return $this->wuXing;
+    }
+
     /**
      * 定星曜
      */
@@ -250,7 +254,6 @@ class ZiWeiDouShu {
      */
     public function getDaXianPan(int $daXianPos = 0) {
         $places = $this->calculatePlace($daXianPos);
-        $year = $this->daXian->getYearByPos($daXianPos);
         
         return [
             'places'    => $places,

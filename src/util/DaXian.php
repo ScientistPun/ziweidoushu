@@ -81,12 +81,4 @@ class DaXian {
     public function getRange() {
         return $this->range;
     }
-
-    /** 
-     * 通过pos获取年
-     */
-    public function getYearByPos(int $pos) {
-        return $this->range[$pos]['begin'] + $this->lunar->getYear();
-    }
-
 }
