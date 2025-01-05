@@ -5,11 +5,14 @@ use com\nlf\calendar\Lunar;
 use com\nlf\calendar\LunarTime;
 use com\nlf\calendar\LunarYear;
 use com\nlf\calendar\Solar;
-use scientistpun\ziwei\util\DaXian;
-use scientistpun\ziwei\util\MingGong;
-use scientistpun\ziwei\util\SiHua;
-use scientistpun\ziwei\util\Stars;
-use scientistpun\ziwei\util\WuXing;
+use scientistpun\ziwei\library\DaXian;
+use scientistpun\ziwei\library\Palace;
+use scientistpun\ziwei\library\SelfPalace;
+use scientistpun\ziwei\library\ShenPalace;
+use scientistpun\ziwei\library\SiHua;
+use scientistpun\ziwei\library\Stars;
+use scientistpun\ziwei\library\TwelvePalace;
+use scientistpun\ziwei\library\WuXing;
 use scientistpun\ziwei\util\Utils;
 
 /**
@@ -19,7 +22,7 @@ use scientistpun\ziwei\util\Utils;
  */
 class ZiWeiDouShu {
     // 十二宫名称
-    private const PLACE_NAME = ["命宫", "兄弟", "夫妻", "子女", "财帛", "疾厄", "迁移", "仆役", "官禄", "田宅", "福德", "父母"];
+    private const PALACE_NAME = ["命宫", "兄弟", "夫妻", "子女", "财帛", "疾厄", "迁移", "仆役", "官禄", "田宅", "福德", "父母"];
 
     private Lunar $lunar;
     private LunarTime $lunarTime;
@@ -29,19 +32,18 @@ class ZiWeiDouShu {
     // true 阳 false 阴
     private bool $yinYang;
 
-    // 宫位起始位置
-    private MingGong $mingGong;
-    // 排好序的宫位
-    private array $twelvePlace;
+    // 命宫
+    private SelfPalace $selfPalace;
 
-    // 立身宫
-    private string $shenPlace;
-    private int $shenPlacePos;
+    // 排好序的宫位
+    private array $twelvePalaces;
+
+    // 身宫
+    private ShenPalace $shenPalace;
     // 来因宫
-    private string $laiYin;
-    private int $laiYinPos;
+    private Palace $laiYinPalace;
     // 宫干
-    private array $gongGan;
+    private array $palaceGan;
     // 五行
     private WuXing $wuXing;
 
@@ -63,8 +65,8 @@ class ZiWeiDouShu {
         $this->lunar = $lunar;
         $this->lunarTime = $lunarTime;
 
-        $this->setGongGan();
-        $this->calculateMingPlace();
+        $this->setPalaceGan();
+        $this->initPalaces();
         $this->calculateYinYang();
         $this->calculateShenPlace();
         $this->calculateLaiYin();
@@ -95,39 +97,42 @@ class ZiWeiDouShu {
     /**
      * 安十二宫宫干
      */
-    private const GONG_GAN_PLACE = ['甲'=>'丙', '乙'=>'戊', '丙'=>'庚', '丁'=>'壬', '壬'=>'壬', '戊'=>'甲', '己'=>'丙', '庚'=>'戊', '辛'=>'庚', '癸'=>'甲'];
-    private function setGongGan() {
-        $startGan = self::GONG_GAN_PLACE[$this->lunar->getYearGan()];
+    private const PALACE_GAN = ['甲'=>'丙', '乙'=>'戊', '丙'=>'庚', '丁'=>'壬', '壬'=>'壬', '戊'=>'甲', '己'=>'丙', '庚'=>'戊', '辛'=>'庚', '癸'=>'甲'];
+    private function setPalaceGan() {
+        $startGan = self::PALACE_GAN[$this->lunar->getYearGan()];
         $startPos = Utils::getIndexByGan($startGan);
 
         $tianGan = [];
         for ($i=0; $i < 12; $i++) { 
             $tianGan[($i+2) % 12] = Utils::getGanByIndex(($startPos+$i) % 10);
         }
-        $this->gongGan = $tianGan;
+        $this->palaceGan = $tianGan;
     }
 
     /**
-     * 起命盘
+     * 起十二宫
      */
-    private function calculateMingPlace() {
-        $mingGongPos = abs($this->lunar->getMonthZhiIndex() - $this->lunarTime->getZhiIndex());
-        $this->twelvePlace = $this->calculatePlace($mingGongPos);
-        $this->mingGong = MingGong::from($mingGongPos, $this->gongGan[$mingGongPos], Utils::getZhiByIndex($mingGongPos));
+    private function initPalaces() {
+        $selfPalacePos = abs($this->lunar->getMonthZhiIndex() - $this->lunarTime->getZhiIndex());
+        $this->selfPalace = SelfPalace::create($selfPalacePos, $this->palaceGan[$selfPalacePos]);
+        $palaces = $this->calculatePalace($selfPalacePos);
+        foreach ($palaces as $idx => $name) {
+            $this->twelvePalaces[$idx] = TwelvePalace::build($name, $idx, $this->palaceGan[$idx]);
+        }
     }
 
     /**
      * 计算宫位
      */
-    private function calculatePlace($pos) {
+    public static function calculatePalace($startPos) {
         // 宫位
         $places = [];
         $idx = 0;
-        for ($i=$pos; $i >= 0; $i--,$idx++) { 
-            $places[$i] = self::PLACE_NAME[$idx];
+        for ($i=$startPos; $i >= 0; $i--,$idx++) { 
+            $places[$i] = self::PALACE_NAME[$idx];
         }
-        for ($i=11; $i > $pos; $i--,$idx++) { 
-            $places[$i] = self::PLACE_NAME[$idx];
+        for ($i=11; $i > $startPos; $i--,$idx++) { 
+            $places[$i] = self::PALACE_NAME[$idx];
         }
         return $places;
     }
@@ -137,8 +142,15 @@ class ZiWeiDouShu {
      */
     private const SHEN_PLACE = ["命宫", "福德", "官禄", "迁移", "财帛", "夫妻"];
     private function calculateShenPlace() {
-        $this->shenPlace = self::SHEN_PLACE[$this->lunarTime->getZhiIndex() % 6];
-        $this->shenPlacePos = array_search($this->shenPlace, $this->twelvePlace);
+        $palaceName = self::SHEN_PLACE[$this->lunarTime->getZhiIndex() % 6];
+        foreach ($this->twelvePalaces as $palace) {
+            if ($palaceName == $palace->getName()) {
+                $this->shenPalace = ShenPalace::create($palace->getPos(), $this->palaceGan[$palace->getPos()]);
+                break;
+            }
+        }
+
+        $this->shenPalace->setZhu($this->lunar->getYearZhi());
     }
 
     /**
@@ -146,15 +158,15 @@ class ZiWeiDouShu {
      */
     private const LAIYIN_PLACE = [ '甲'=>'戌', '乙'=>'酉', '丙'=>'申', '丁'=>'未', '戊'=>'午', '己'=>'巳', '庚'=>'辰', '辛'=>'卯', '壬'=>'寅', '癸' => '亥'];
     private function calculateLaiYin() {
-        $this->laiYin = self::LAIYIN_PLACE[$this->lunar->getYearGan()];
-        $this->laiYinPos = Utils::getIndexByZhi($this->laiYin);
+        $pos = Utils::getIndexByZhi(self::LAIYIN_PLACE[$this->lunar->getYearGan()]);
+        $this->laiYinPalace = Palace::create($pos, $this->palaceGan[$pos]);
     }
 
     /**
      * 定五行局
      */
     private function setWuXing() {
-        $this->wuXing = WuXing::fromGanZhi($this->mingGong->getGanZhi());
+        $this->wuXing = WuXing::fromGanZhi($this->selfPalace->getGanZhi());
     }
 
     public function getWuXing() {
@@ -165,14 +177,14 @@ class ZiWeiDouShu {
      * 定星曜
      */
     private function setStars() {
-        $this->stars = Stars::from($this->yinYang, $this->gender, $this->lunar, $this->wuXing, $this->mingGong);
+        $this->stars = Stars::from($this->yinYang, $this->gender, $this->lunar, $this->wuXing, $this->selfPalace);
     }
 
     /**
      * 排大限
      */
     private function setDaXian() {
-        $this->daXian = DaXian::from($this->yinYang, $this->gender, $this->lunar, $this->wuXing, $this->mingGong, $this->gongGan);
+        $this->daXian = DaXian::from($this->yinYang, $this->gender, $this->lunar, $this->wuXing, $this->selfPalace, $this->palaceGan);
     }
 
     /**
@@ -198,23 +210,22 @@ class ZiWeiDouShu {
             'lunar'     => $this->lunar->toString() . ' ' . $this->lunar->getTime()->getZhi() . '时',
             'wuXing'    => $this->wuXing->getData(),
             'daXianRange'    => $this->daXian->getRange(),
+            'mingZhu'   => $this->selfPalace->getZhu(),
+            'shenZhu'   => $this->shenPalace->getZhu(),
         ];
     }
 
     /**
      * 获取十二宫信息 - 排盘
      */
-    public function getTwelvePlace() {
+    public function paiPan() {
         $stars = $this->stars->getFormatAllStars();
 
         $daXianRange = $this->daXian->getRange();
 
-        $twelvePlace = [];
+        $twelvePalaces = [];
         for ($i=0; $i < 12; $i++) {
-            $twelvePlace[] = [
-                'name'     => $this->twelvePlace[$i],
-                'tianGan'   => $this->gongGan[$i],
-                'diZhi'     => Utils::getZhiByIndex($i),
+            $twelvePalaces[] = array_merge($this->twelvePalaces[$i]->getFullData(), [
                 'stars'    => [
                     'masterStars' => $stars['masterStars'][$i], 
                     'luckyStars' => $stars['luckyStars'][$i],
@@ -226,10 +237,10 @@ class ZiWeiDouShu {
                     'suiQianStars' => $stars['suiQianStars'][$i],
                 ],
                 'daXian' => $daXianRange[$i],
-            ];
+            ]);
         }
 
-        return $twelvePlace;
+        return $twelvePalaces;
     }
 
     /**
@@ -237,13 +248,9 @@ class ZiWeiDouShu {
      */
     public function getMingPan() {
         return [
-            'shenPlaceZhi'  => Utils::getZhiByIndex($this->shenPlacePos),
-            'laiYinZhi'     => Utils::getZhiByIndex($this->laiYinPos),
-            'mingGong' => [
-                'pos' => $this->mingGong->getPos(),
-                'gan' => $this->mingGong->getGan(),
-                'zhi' => $this->mingGong->getZhi(),
-            ],
+            'shen'  => $this->shenPalace->getFullData(),
+            'laiYin'     => $this->laiYinPalace->getFullData(),
+            'selfPalace' => $this->selfPalace->getFullData(),
             'siHua'     => $this->siHua->getBirth(),
         ];
     }
@@ -253,16 +260,13 @@ class ZiWeiDouShu {
      * 大限盘
      */
     public function getDaXianPan(int $daXianPos = 0) {
-        $places = $this->calculatePlace($daXianPos);
+        $places = self::calculatePalace($daXianPos);
+        $daXianPalace = Palace::create($daXianPos, $this->palaceGan[$daXianPos]);
         
         return [
-            'places'    => $places,
-            'mingGong'  => [
-                'pos'   => $daXianPos,
-                'gan'   => $this->gongGan[$daXianPos],
-                'zhi'   => Utils::getZhiByIndex($daXianPos),
-            ],
-            'siHua'     => $this->siHua->calculate($this->gongGan[$daXianPos])
+            'palaces'       => $places,
+            'selfPalace'    => $daXianPalace->getFullData(),
+            'siHua'         => $this->siHua->calculate($this->palaceGan[$daXianPos])
         ];
     }
 
@@ -272,18 +276,15 @@ class ZiWeiDouShu {
     public function getLiuNianPan(int $year = 0) {
         $lunarYear = LunarYear::fromYear($year);
         $pos = $lunarYear->getZhiIndex();
-        $places = $this->calculatePlace($pos);
+        $places = self::calculatePalace($pos);
+
+        $liuNianPalace = Palace::create($pos, $this->palaceGan[$pos]);
         
         return [
-            'places'    => $places,
-            'mingGong'  => [
-                'pos'   => $pos,
-                'gan'   => $this->gongGan[$pos],
-                'zhi'   => Utils::getZhiByIndex($pos),
-            ],
+            'palaces'       => $places,
+            'selfPalace'  => $liuNianPalace->getFullData(),
             'siHua'     => $this->siHua->getLiuYear($year)
         ];
-
     }
     
 }

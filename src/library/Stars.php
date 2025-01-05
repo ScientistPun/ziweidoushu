@@ -1,8 +1,9 @@
 <?php
-namespace scientistpun\ziwei\util;
+namespace scientistpun\ziwei\library;
 
 use com\nlf\calendar\Lunar;
 use com\nlf\calendar\util\LunarUtil;
+use scientistpun\ziwei\util\Utils;
 
 /**
  * 紫微星曜 - 命盘
@@ -11,7 +12,7 @@ use com\nlf\calendar\util\LunarUtil;
 class Stars {
     private Lunar $lunar;
     private WuXing $wuXing;
-    private MingGong $mingGong;
+    private SelfPalace $selfPalace;
     private bool $yinYang;
     private bool $gender;
 
@@ -347,10 +348,10 @@ class Stars {
     // 病符
     private Star $bingFu2;
 
-    private function __construct(bool $yinYang, bool $gender, Lunar $lunar, WuXing $wuXing, MingGong $mingGong) {
+    private function __construct(bool $yinYang, bool $gender, Lunar $lunar, WuXing $wuXing, SelfPalace $selfPalace) {
         $this->lunar = $lunar;
         $this->wuXing = $wuXing;
-        $this->mingGong = $mingGong;
+        $this->selfPalace = $selfPalace;
         $this->yinYang = $yinYang;
         $this->gender = $gender;
 
@@ -365,8 +366,8 @@ class Stars {
         $this->settleByType();
     }
 
-    public static function from (bool $yinYang, bool $gender, Lunar $lunar, WuXing $wuXing, MingGong $mingGong) {
-        return new Stars($yinYang, $gender, $lunar, $wuXing, $mingGong);
+    public static function from (bool $yinYang, bool $gender, Lunar $lunar, WuXing $wuXing, SelfPalace $selfPalace) {
+        return new Stars($yinYang, $gender, $lunar, $wuXing, $selfPalace);
     }
 
 
@@ -688,19 +689,19 @@ class Stars {
         $this->enGuang = Star::create('恩光', $this->clockwiseMove($this->wenChang->getZhi(), $day - 2), Star::TYPE_OTHER);
         
         // 天才
-        $this->tianCai = Star::create('天才', $this->clockwiseMove($this->mingGong->getZhi(), $yearZhiIdx), Star::TYPE_OTHER);
+        $this->tianCai = Star::create('天才', $this->clockwiseMove($this->selfPalace->getZhi(), $yearZhiIdx), Star::TYPE_OTHER);
         
         // 天寿
-        $this->tianShou = Star::create('天寿', $this->clockwiseMove($this->mingGong->getZhi(), $yearZhiIdx), Star::TYPE_OTHER);
+        $this->tianShou = Star::create('天寿', $this->clockwiseMove($this->selfPalace->getZhi(), $yearZhiIdx), Star::TYPE_OTHER);
         
         // 天伤
-        $this->tianShang = Star::create('天伤', $this->clockwiseMove($this->mingGong->getZhi(), 7), Star::TYPE_OTHER);
+        $this->tianShang = Star::create('天伤', $this->clockwiseMove($this->selfPalace->getZhi(), 7), Star::TYPE_OTHER);
         
         // 天使
-        $this->tianShi = Star::create('天使', $this->clockwiseMove($this->mingGong->getZhi(), 5), Star::TYPE_OTHER);
+        $this->tianShi = Star::create('天使', $this->clockwiseMove($this->selfPalace->getZhi(), 5), Star::TYPE_OTHER);
         
         // 旬空
-        $this->xunKong = Star::create('旬空', Utils::getIndexByZhi(self::XUN_KONG_PLACE[$this->mingGong->getGanZhi()]), Star::TYPE_OTHER);
+        $this->xunKong = Star::create('旬空', Utils::getIndexByZhi(self::XUN_KONG_PLACE[$this->selfPalace->getGanZhi()]), Star::TYPE_OTHER);
     }
 
     public function getOtherStars() {

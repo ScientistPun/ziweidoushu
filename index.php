@@ -17,11 +17,11 @@ $gender = isset($_POST['gender']) ? $_POST['gender'] == 1:$searchGender;
 
 $ziwei = ZiWeiDouShu::fromYmdH($year, $month, $day, $hour, $gender);
 $profile = $ziwei->getPersonal();
-$twelvePlace = $ziwei->getTwelvePlace();
+$twelvePalace = $ziwei->paiPan();
 $mingPan = $ziwei->getMingPan();
 
-$daXianPos = isset($_POST['da_xian_pos']) ? $_POST['da_xian_pos']:$mingPan['mingGong']['pos'];
-$liuNian = isset($_POST['liu_year']) ? intval($_POST['liu_year']) : $profile['daXianRange'][$daXianPos]['years'][0];
+$daXianPos = isset($_POST['da_xian_pos']) ? intval($_POST['da_xian_pos']):2;
+$liuNian = isset($_POST['liu_year']) ? intval($_POST['liu_year']) : date('Y');
 
 $daXianPan = $ziwei->getDaXianPan($daXianPos);
 $liuNianPan = $ziwei->getLiuNianPan($liuNian);
@@ -34,10 +34,10 @@ echo '</pre>';
 static $ROW_POS = [3, 3, 3, 2, 1, 0, 0, 0, 0, 1, 2, 3];
 static $COL_POS = [2, 1, 0, 0, 0, 0, 1, 2, 3, 3, 3, 3];
 for ($i=0; $i < 12; $i++) { 
-    $places[$ROW_POS[$i]][$COL_POS[$i]] = array_merge($twelvePlace[$i], ['dxPlace'=>'大'.mb_substr($daXianPan['places'][$i], 0, 1), 'yearPlace'=>'年'.mb_substr($liuNianPan['places'][$i], 0, 1)]);
+    $places[$ROW_POS[$i]][$COL_POS[$i]] = array_merge($twelvePalace[$i], ['dxPlace'=>'大'.mb_substr($daXianPan['palaces'][$i], 0, 1), 'yearPlace'=>'年'.mb_substr($liuNianPan['palaces'][$i], 0, 1)]);
 }
 for ($row=0; $row < 4; $row++) { 
-    for ($col=0; $col < 4; $col++) { 
+    for ($col=0; $col < 4; $col++) {
         if (!isset($places[$row][$col])) {
             $places[$row][$col] = null;
         }
@@ -46,7 +46,8 @@ for ($row=0; $row < 4; $row++) {
 
 echo '<pre>';
 
-// print_r($places);
+// print_r($twelvePalace);
+// print_r($liuNianPan);
 echo '</pre>';
 ?>
 
@@ -153,6 +154,8 @@ echo '</pre>';
                                 echo '<p class="">农历：'.$profile['lunar'].'</p>'; 
                                 echo '<p class="">四柱：'.implode(' ', $profile['bazi']).'</p>'; 
                                 echo '<p class="">命局：'.$profile['wuXing']['naYin'].'</p>'; 
+                                echo '<p class="">命主：'.$profile['mingZhu'].'</p>'; 
+                                echo '<p class="">身主：'.$profile['shenZhu'].'</p>'; 
                             } elseif ($r == 2) {
                                 echo '<p class="">本命：';
                                 foreach ($mingPan['siHua'] as $key => $sihua) {
@@ -233,8 +236,8 @@ echo '</pre>';
                                 echo '</td>'; 
                                 echo '</tr><tr style="vertical-align:top;">';
                                 echo '<td>';
-                                echo ($mingPan['laiYinZhi'] == $place['diZhi'] ? '<span class="layui-font-14 layui-border">来因</span>':'');
-                                echo ($mingPan['shenPlaceZhi'] == $place['diZhi'] ? '<span class="layui-font-14 layui-border-red">身宫</span>':'');
+                                echo ($mingPan['laiYin']['zhi'] == $place['zhi'] ? '<span class="layui-font-14 layui-border">来因</span>':'');
+                                echo ($mingPan['shen']['zhi'] == $place['zhi'] ? '<span class="layui-font-14 layui-border-red">身宫</span>':'');
                                 echo '</td>';
                                 echo '<td style="text-align: right;" colspan="2">';
                                 echo "<span class='layui-font-12 grid-item-desc'>{$place['daXian']['begin']}-{$place['daXian']['end']}</span><br/>";
@@ -243,7 +246,7 @@ echo '</pre>';
                                 echo '<td style="text-align:left;">';
                                 if (is_array($place['stars']['boShiStars'])) {
                                     foreach ($place['stars']['boShiStars'] as $star) {
-                                        echo "<span class='layui-font-12' style='color:#82a6a3;'>{$star['name']}</span><br/>";
+                                        echo "<sp`an class='layui-font-12' style='color:#82a6a3;'>{$star['name']}</span><br/>";
                                     }
                                 }
                                 if (is_array($place['stars']['jiangQianStars'])) {
@@ -260,7 +263,7 @@ echo '</pre>';
                                 echo "<span class='layui-font-14 layui-font-blue'>{$place['yearPlace']}</span><br/>";
                                 echo "<span class='layui-font-14 layui-font-green'>{$place['dxPlace']}</span><br/>";
 
-                                echo '<b class="layui-font-14 '.($mingPan['mingGong']['zhi'] == $place['diZhi'] ? ' layui-badge':' layui-bg-gray').' ">' . $place['name'].'</b>';
+                                echo '<b class="layui-font-14 '.($mingPan['selfPalace']['zhi'] == $place['diZhi'] ? ' layui-badge':' layui-bg-gray').' ">' . $place['name'].'</b>';
                                 echo '</td>';
                                 echo '<td style="text-align:right;">';
                                 if (is_array($place['stars']['changShengStars'])) {
@@ -268,7 +271,7 @@ echo '</pre>';
                                         echo "<span class='layui-font-12' style='color: #aaa;'>{$star['name']}</span><br/>";
                                     }
                                 }
-                                echo '<span class="layui-font-16" style="color: #777;">'.$place['tianGan'].'<br/>'.$place['diZhi'].'</span> <td>';
+                                echo '<span class="layui-font-16" style="color: #777;">'.$place['gan'].'<br/>'.$place['zhi'].'</span> <td>';
                                 echo '</tr>';
 
                             }

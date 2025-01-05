@@ -1,36 +1,37 @@
 <?php
-namespace scientistpun\ziwei\util;
+namespace scientistpun\ziwei\library;
 
 use com\nlf\calendar\Lunar;
+use scientistpun\ziwei\util\Utils;
 
 /** 
  * 大限
  */
 class DaXian {
     private Lunar $lunar;
-    private MingGong $mingGong;
+    private SelfPalace $selfPalace;
     private WuXing $wuXing;
     private bool $yinYang;
     private bool $gender;
-    private array $gongGan;
+    private array $palaceGan;
 
     private array $range;
 
     
-    private function __construct(bool $yinYang, bool $gender, Lunar $lunar, WuXing $wuXing, MingGong $mingGong, array $gongGan)
+    private function __construct(bool $yinYang, bool $gender, Lunar $lunar, WuXing $wuXing, SelfPalace $selfPalace, array $palaceGan)
     {
         $this->lunar = $lunar;
         $this->yinYang = $yinYang;   
         $this->gender = $gender;   
         $this->wuXing = $wuXing;   
-        $this->mingGong = $mingGong;
-        $this->gongGan = $gongGan;
+        $this->selfPalace = $selfPalace;
+        $this->palaceGan = $palaceGan;
 
         $this->calculateRange();
     }
 
-    public static function from (bool $yinYang, bool $gender, Lunar $lunar, WuXing $wuXing, MingGong $mingGong, array $gongGan) {
-        return new DaXian( $yinYang, $gender, $lunar, $wuXing, $mingGong, $gongGan);
+    public static function from (bool $yinYang, bool $gender, Lunar $lunar, WuXing $wuXing, SelfPalace $selfPalace, array $palaceGan) {
+        return new DaXian( $yinYang, $gender, $lunar, $wuXing, $selfPalace, $palaceGan);
     }
 
     private function calculateRange() {
@@ -50,15 +51,15 @@ class DaXian {
         $range = [];
         if ($clockwise) {
             for ($i=0; $i < 12; $i++) { 
-                $range[($i + $this->mingGong->getPos()) % 12] = array_merge($agePlace[$i], ['gan'=>$this->gongGan[$i], 'zhi'=>Utils::getIndexByZhi($i)]);
+                $range[($i + $this->selfPalace->getPos()) % 12] = array_merge($agePlace[$i], ['gan'=>$this->palaceGan[$i], 'zhi'=>Utils::getIndexByZhi($i)]);
             }
         } else {
             $idx = 0;
-            for ($i=$this->mingGong->getPos(); $i >= 0; $i--,$idx++) { 
-                $range[$i] = array_merge($agePlace[$idx], ['gan'=>$this->gongGan[$idx], 'zhi'=>Utils::getIndexByZhi($idx)]);
+            for ($i=$this->selfPalace->getPos(); $i >= 0; $i--,$idx++) { 
+                $range[$i] = array_merge($agePlace[$idx], ['gan'=>$this->palaceGan[$idx], 'zhi'=>Utils::getIndexByZhi($idx)]);
             }
-            for ($i=11; $i > $this->mingGong->getPos(); $i--,$idx++) { 
-                $range[$i] = array_merge($agePlace[$idx], ['gan'=>$this->gongGan[$idx], 'zhi'=>Utils::getIndexByZhi($idx)]);
+            for ($i=11; $i > $this->selfPalace->getPos(); $i--,$idx++) { 
+                $range[$i] = array_merge($agePlace[$idx], ['gan'=>$this->palaceGan[$idx], 'zhi'=>Utils::getIndexByZhi($idx)]);
             }
         }
 

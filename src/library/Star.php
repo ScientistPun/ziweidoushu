@@ -1,6 +1,7 @@
 <?php
-namespace scientistpun\ziwei\util;
+namespace scientistpun\ziwei\library;
 
+use scientistpun\ziwei\util\Utils;
 
 class Star {
 

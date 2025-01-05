@@ -1,5 +1,5 @@
 <?php
-namespace scientistpun\ziwei\util;
+namespace scientistpun\ziwei\library;
 
 use com\nlf\calendar\Lunar;
 use com\nlf\calendar\LunarYear;
