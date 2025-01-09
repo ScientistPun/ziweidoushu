@@ -177,7 +177,7 @@ class ZiWeiDouShu {
      * 定星曜
      */
     private function setStars() {
-        $this->stars = Stars::from($this->yinYang, $this->gender, $this->lunar, $this->wuXing, $this->selfPalace);
+        $this->stars = Stars::from($this->yinYang, $this->gender, $this->lunar, $this->wuXing, $this->selfPalace, $this->shenPalace);
     }
 
     /**
@@ -235,6 +235,7 @@ class ZiWeiDouShu {
                     'changShengStars' => $stars['changShengStars'][$i],
                     'jiangQianStars' => $stars['jiangQianStars'][$i],
                     'suiQianStars' => $stars['suiQianStars'][$i],
+                    'liuYaoStars' => $stars['liuYaoStars'][$i],
                 ],
                 'daXian' => $daXianRange[$i],
             ]);

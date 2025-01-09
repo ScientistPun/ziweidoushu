@@ -48,6 +48,7 @@ class Star {
     public const TYPE_CHANG_SHENG = 'changShengStars';
     public const TYPE_JIANG_QIAN = 'jiangQianStars';
     public const TYPE_SUI_QIAN = 'suiQianStars';
+    public const TYPE_LIU_YAO = 'liuYaoStars';
 
 
     private function __construct(string $name, int $pos, string $type, int $bright = 0) 

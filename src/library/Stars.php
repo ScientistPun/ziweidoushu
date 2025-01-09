@@ -13,6 +13,7 @@ class Stars {
     private Lunar $lunar;
     private WuXing $wuXing;
     private SelfPalace $selfPalace;
+    private ShenPalace $shenPalace;
     private bool $yinYang;
     private bool $gender;
 
@@ -107,12 +108,6 @@ class Stars {
     private Star $hongLuan;
     // 天喜
     private Star $tianXi;
-
-    // 咸池 宫位 年支对应宫支 四败地
-    private const XIAN_CHI_PLACE  = [ '子'=>'酉', '辰'=>'酉', '申'=>'酉', '卯'=>'子', '未'=>'子', '亥'=>'子', '寅'=>'卯', '午'=>'卯', '戌'=>'卯', '丑'=>'午', '巳'=>'午', '酉'=>'午'];
-    // 咸池
-    private Star $xianChi;
-
     // 天姚
     private Star $tianYao;
     // 天刑
@@ -142,11 +137,6 @@ class Stars {
     // 凤阁
     private Star $fengGe;
 
-    // 华盖 宫位年支对应宫支 四墓地
-    private const HUA_GAI_PLACE = [ '子'=>'辰', '辰'=>'辰', '申'=>'辰', '卯'=>'未', '未'=>'未', '亥'=>'未', '寅'=>'戌', '午'=>'戌', '戌'=>'戌', '丑'=>'丑', '巳'=>'丑', '酉'=>'丑'];
-    // 华盖
-    private Star $huaGai;
-
     // 劫煞 宫位年支对应宫支 四马地
     private const JIE_SHA_PLACE = ['子'=>'巳', '辰'=>'巳', '申'=>'巳', '卯'=>'申', '未'=>'申', '亥'=>'申', '寅'=>'亥', '午'=>'亥', '戌'=>'亥', '丑'=>'寅', '巳'=>'寅', '酉'=>'寅'];
     // 劫煞
@@ -162,20 +152,18 @@ class Stars {
     // 寡宿
     private Star $guaSu;
 
-    // 破碎 宫位年支对应宫支
-    private const PO_SUI_PLACE = ['子'=>'已', '午'=>'已', '卯'=>'已', '酉'=>'已', '辰'=>'丑', '戍'=>'丑', '丑'=>'丑', '未'=>'丑', '寅'=>'酉', '申'=>'酉', '已'=>'酉', '亥'=>'酉'];
-    // 破碎
-    private Star $poSui;
-
     // 大耗
     private const DA_HAO_PLACE = ['子'=>'未', '寅'=>'酉', '已'=>'戍', '丑'=>'午', '卯'=>'申', '辰'=>'亥', '午'=>'丑', '未'=>'子', '申'=>'卯', '酉'=>'寅', '戍'=>'已', '亥'=>'辰'];
     // 大耗
     private Star $daHao;
-
+    
     // 天德
     private Star $tianDe;
+    
     // 解神
+    private const JIE_SHEN_PLACE = ['申', '申', '戌', '戌', '子', '子', '寅', '寅', '辰', '辰', '午', '午'];
     private Star $jieShen;
+    private Star $nianJie;
 
     // 台辅
     private Star $taiFu;
@@ -183,13 +171,8 @@ class Stars {
     // 封诰
     private Star $fengGao;
     
-    // 蜚廉 宫位
-    private const FEI_LIAN_PLACE = ['子'=>'申', '丑'=>'酉', '寅'=>'戍', '卯'=>'已', '辰'=>'午', '巳'=>'未', '午'=>'寅', '未'=>'卯', '申'=>'辰', '酉'=>'亥', '戌'=>'子', '亥'=>'丑'];
-    // 蜚廉
-    private Star $feiLian;
-    
     // 天官 宫位年干对应宫支
-    private const TIAN_GUAN_PLACE = ['甲'=>'未', '乙'=>'辰', '丙'=>'已', '丁'=>'寅', '戊'=>'卯', '己'=>'酉', '庚'=>'亥', '辛'=>'酉', '壬'=>'戌', '癸'=>'午'];
+    private const TIAN_GUAN_PLACE = ['甲'=>'未', '未', '乙'=>'辰', '丙'=>'已', '丁'=>'寅', '戊'=>'卯', '己'=>'酉', '庚'=>'亥', '辛'=>'酉', '壬'=>'戌', '癸'=>'午'];
     // 天官
     private Star $tianGuan;
 
@@ -199,9 +182,10 @@ class Stars {
     private Star $tianFu1;
 
     // 截空 宫位年干对应宫支
-    private const JIE_KONG_PLACE = ['甲'=>'申', '乙'=>'午', '丙'=>'辰', '丁'=>'寅', '戊'=>'子', '己'=>'酉', '庚'=>'未', '辛'=>'巳', '壬'=>'卯', '癸'=>'丑'];
+    private const JIE_KONG_PLACE = [['申', '酉'], ['未','午'], ['辰', '巳'], ['丁', '卯'], ['子', '丑']];
     // 截空
     private Star $jieKong;
+    private Star $fuJie;
 
     // 三台
     private Star $sanTai;
@@ -219,19 +203,28 @@ class Stars {
     private Star $tianShang;
     // 天使
     private Star $tianShi;
+
+    // 天厨
+    private const TIAN_CHU_PLACE = ['甲'=>'巳', '乙'=>'午', '丙'=>'子', '丁'=>'巳', '戊'=>'午', '己'=>'申', '庚'=>'寅', '辛'=>'午', '壬'=>'酉', '癸'=>'猪'];
+    private Star $tianChu;
+
+    // 天空
+    private Star $tianKong;
     
     // 旬空
     private const XUN_KONG_PLACE = [
-        '甲子' => '寅', '甲午' => '申', '丙寅' => '午', '丙申' => '子', '戊辰' => '戌', '戊戌' => '辰', '庚午' => '寅', '庚子' => '申', '壬申' => '午',
-        '壬寅' => '子', '甲戌' => '子', '甲辰' => '午', '丙子' => '辰', '丙午' => '戌', '戊寅' => '申', '戊申' => '寅', '庚辰' => '子', '庚戌' => '午', 
-        '壬午' => '辰', '壬子' => '戌', '甲申' => '戌', '甲寅' => '辰', '丙戌' => '寅', '丙辰' => '申', '戊子' => '午', '戊午' => '子', '庚寅' => '戌',
-        '庚申' => '辰', '壬辰' => '寅', '壬戌' => '申', '乙丑' => '卯', '乙未' => '酉', '丁卯' => '未', '丁酉' => '丑', '己巳' => '亥', '己亥' => '巳',
-        '辛未' => '卯', '辛丑' => '酉', '癸酉' => '未', '癸卯' => '丑', '乙亥' => '丑', '乙巳' => '未', '丁丑' => '巳', '丁未' => '亥', '己卯' => '酉',
-        '己酉' => '卯', '辛巳' => '丑', '辛亥' => '未', '癸未' => '巳', '癸丑' => '亥', '乙酉' => '亥', '乙卯' => '巳', '丁亥' => '卯', '丁巳' => '酉',
-        '己丑' => '未', '己未' => '丑', '辛卯' => '亥', '辛酉' => '巳', '癸巳' => '卯', '癸亥' => '酉'
+        '甲子' => ['戌', '亥'], '甲午' => ['辰', '巳'], '丙寅' => ['戌', '亥'], '丙申' => ['辰', '巳'], '戊辰' => ['戌', '亥'], '戊戌' => ['辰', '巳'], '庚午' => ['戌', '亥'], '庚子' => ['辰', '巳'], '壬申' => ['戌', '亥'],
+        '壬寅' => ['辰', '巳'], '甲戌' => ['申', '酉'], '甲辰' => ['寅', '卯'], '丙子' => ['申', '酉'], '丙午' => ['寅', '卯'], '戊寅' => ['申', '酉'], '戊申' => ['寅', '卯'], '庚辰' => ['申', '酉'], '庚戌' => ['寅', '卯'], 
+        '壬午' => ['申', '酉'], '壬子' => ['寅', '卯'], '甲申' => ['午', '未'], '甲寅' => ['子', '丑'], '丙戌' => ['午', '未'], '丙辰' => ['子', '丑'], '戊子' => ['午', '未'], '戊午' => ['子', '丑'], '庚寅' => ['午', '未'],
+        '庚申' => ['子', '丑'], '壬辰' => ['午', '未'], '壬戌' => ['子', '丑'], '乙丑' => ['戌', '亥'], '乙未' => ['辰', '巳'], '丁卯' => ['戌', '亥'], '丁酉' => ['辰', '巳'], '己巳' => ['戌', '亥'], '己亥' => ['辰', '巳'],
+        '辛未' => ['戌', '亥'], '辛丑' => ['辰', '巳'], '癸酉' => ['戌', '亥'], '癸卯' => ['辰', '巳'], '乙亥' => ['申', '酉'], '乙巳' => ['寅', '卯'], '丁丑' => ['申', '酉'], '丁未' => ['寅', '卯'], '己卯' => ['申', '酉'],
+        '己酉' => ['寅', '卯'], '辛巳' => ['申', '酉'], '辛亥' => ['寅', '卯'], '癸未' => ['申', '酉'], '癸丑' => ['寅', '卯'], '乙酉' => ['午', '未'], '乙卯' => ['子', '丑'], '丁亥' => ['午', '未'], '丁巳' => ['子', '丑'],
+        '己丑' => ['午', '未'], '己未' => ['子', '丑'], '辛卯' => ['午', '未'], '辛酉' => ['子', '丑'], '癸巳' => ['午', '未'], '癸亥' => ['子', '丑']
     ];
     // 旬空
     private Star $xunKong;
+    // 副旬
+    private Star $fuXun;
 
     // -------- 博士十二神 --------
     private array $boShiStars;
@@ -348,10 +341,40 @@ class Stars {
     // 病符
     private Star $bingFu2;
 
-    private function __construct(bool $yinYang, bool $gender, Lunar $lunar, WuXing $wuXing, SelfPalace $selfPalace) {
+
+    // -------- 年支六曜 --------
+    private array $liuYaoStars;
+    // 蜚廉 宫位
+    private const FEI_LIAN_PLACE = ['子'=>'申', '丑'=>'酉', '寅'=>'戍', '卯'=>'已', '辰'=>'午', '巳'=>'未', '午'=>'寅', '未'=>'卯', '申'=>'辰', '酉'=>'亥', '戌'=>'子', '亥'=>'丑'];
+    // 蜚廉
+    private Star $feiLian;
+
+    // 破碎 宫位年支对应宫支
+    private const PO_SUI_PLACE = ['子'=>'已', '午'=>'已', '卯'=>'已', '酉'=>'已', '辰'=>'丑', '戍'=>'丑', '丑'=>'丑', '未'=>'丑', '寅'=>'酉', '申'=>'酉', '已'=>'酉', '亥'=>'酉'];
+    // 破碎
+    private Star $poSui;
+
+    // 华盖 宫位年支对应宫支 四墓地
+    private const HUA_GAI_PLACE = [ '子'=>'辰', '辰'=>'辰', '申'=>'辰', '卯'=>'未', '未'=>'未', '亥'=>'未', '寅'=>'戌', '午'=>'戌', '戌'=>'戌', '丑'=>'丑', '巳'=>'丑', '酉'=>'丑'];
+    // 华盖
+    private Star $huaGai;
+
+    // 咸池 宫位 年支对应宫支 四败地
+    private const XIAN_CHI_PLACE  = [ '子'=>'酉', '辰'=>'酉', '申'=>'酉', '卯'=>'子', '未'=>'子', '亥'=>'子', '寅'=>'卯', '午'=>'卯', '戌'=>'卯', '丑'=>'午', '巳'=>'午', '酉'=>'午'];
+    // 咸池
+    private Star $xianChi;
+
+    // 月德
+    private Star $yueDe;
+
+    // 龙德
+    private Star $longDe1;
+
+    private function __construct(bool $yinYang, bool $gender, Lunar $lunar, WuXing $wuXing, SelfPalace $selfPalace, ShenPalace $shenPalace) {
         $this->lunar = $lunar;
         $this->wuXing = $wuXing;
         $this->selfPalace = $selfPalace;
+        $this->shenPalace = $shenPalace;
         $this->yinYang = $yinYang;
         $this->gender = $gender;
 
@@ -363,13 +386,13 @@ class Stars {
         $this->setChangShengStars();
         $this->setJiangQianStars();
         $this->setSuiQianStars();
+        $this->setLiuYaoStars();
         $this->settleByType();
     }
 
-    public static function from (bool $yinYang, bool $gender, Lunar $lunar, WuXing $wuXing, SelfPalace $selfPalace) {
-        return new Stars($yinYang, $gender, $lunar, $wuXing, $selfPalace);
+    public static function from (bool $yinYang, bool $gender, Lunar $lunar, WuXing $wuXing, SelfPalace $selfPalace, ShenPalace $shenPalace) {
+        return new Stars($yinYang, $gender, $lunar, $wuXing, $selfPalace, $shenPalace);
     }
-
 
     /**
      * 按类型安星
@@ -393,6 +416,8 @@ class Stars {
                 $this->jiangQianStars[$star->getPos()][] = $star;
             } elseif ($star->getType() == Star::TYPE_SUI_QIAN) {
                 $this->suiQianStars[$star->getPos()][] = $star;
+            } elseif ($star->getType() == Star::TYPE_LIU_YAO) {
+                $this->liuYaoStars[$star->getPos()][] = $star;
             }
         }
     }
@@ -412,6 +437,17 @@ class Stars {
             if ($pos < 0) $pos += 12;
         }
         return $pos;
+    }
+
+    /**
+     * 计算闰月
+     */
+    private function getLunarMonth() {
+        $month = $this->lunar->getMonth();
+        if ($month > 0) return $month;
+        $month = abs($month);
+
+        return $this->lunar->getDay() >= 15 ? $month + 1:$month;
     }
 
     /**
@@ -470,7 +506,7 @@ class Stars {
 
         // 天梁 七杀逆行一格
         $tianLiangPos = $qiShaPos > 0 ? $qiShaPos - 1:11;
-        $this->tianLiang = Star::create('天梁', $qiShaPos, Star::TYPE_MASTER);
+        $this->tianLiang = Star::create('天梁', $tianLiangPos, Star::TYPE_MASTER);
 
         // 巨门 天梁逆行两格
         $juMenPos = $tianLiangPos - 2;
@@ -508,7 +544,7 @@ class Stars {
      * 定6吉星
      */
     public function setLuckyStars () {
-        $month = $this->lunar->getMonth();
+        $month = $this->getLunarMonth();
         $yearGan = $this->lunar->getYearGan();
         $hourZhiIdx = $this->lunar->getTime()->getZhiIndex();
 
@@ -574,11 +610,13 @@ class Stars {
      */
     public function setOtherStars () {
         $yearGan = $this->lunar->getYearGan();
+        $yearGanIdx = $this->lunar->getYearGanIndex();
         $yearZhi = $this->lunar->getYearZhi();
         $yearZhiIdx = $this->lunar->getYearZhiIndex();
         $day = $this->lunar->getDay();
         $hourZhiIdx = $this->lunar->getTime()->getZhiIndex();
-        $month = $this->lunar->getMonth();
+        $month = $this->getLunarMonth();
+        $monthZhiIdx = $this->lunar->getMonthZhiIndex();
 
         // 禄存
         $luCunPos = array_search(self::LU_CUN_TIAN_GAN[$this->lunar->getYearGan()], LunarUtil::$ZHI) - 1;
@@ -592,7 +630,7 @@ class Stars {
         $this->hongLuan = Star::create('红鸾', $this->clockwiseMove('卯', $yearZhiIdx, false), Star::TYPE_OTHER);
         
         // 天喜 红鸾的对宫
-        $this->tianXi = Star::create('天喜', $this->clockwiseMove($this->hongLuan->getZhi(), 7), Star::TYPE_OTHER);
+        $this->tianXi = Star::create('天喜', $this->clockwiseMove($this->hongLuan->getZhi(), 6), Star::TYPE_OTHER);
 
         // 天刑
         $this->tianXing = Star::create('天刑', $this->clockwiseMove('酉', $month - 1), Star::TYPE_OTHER);
@@ -624,17 +662,9 @@ class Stars {
         // 凤阁
         $this->fengGe = Star::create('凤阁', $this->clockwiseMove('戌', $yearZhiIdx, false), Star::TYPE_OTHER);
 
-        // 华盖
-        $huaGaiPos = Utils::getIndexByZhi(self::HUA_GAI_PLACE[$yearZhi]);
-        $this->huaGai = Star::create('华盖', $huaGaiPos, Star::TYPE_OTHER);
-
         // 劫煞
         $jieShaPos = Utils::getIndexByZhi(self::JIE_SHA_PLACE[$yearZhi]);
         $this->jieSha = Star::create('劫煞', $jieShaPos, Star::TYPE_OTHER);
-
-        // 咸池
-        $xianChiPos = Utils::getIndexByZhi(self::XIAN_CHI_PLACE[$this->lunar->getYearZhi()]);
-        $this->xianChi = Star::create('咸池', $xianChiPos, Star::TYPE_OTHER);
 
         // 孤臣
         $guChenPos = Utils::getIndexByZhi(self::GU_CHEN_PLACE[$yearZhi]);
@@ -644,10 +674,6 @@ class Stars {
         $guaSuPos = Utils::getIndexByZhi(self::GUA_SU_PLACE[$yearZhi]);
         $this->guaSu = Star::create('寡宿', $guaSuPos, Star::TYPE_OTHER);
 
-        // 破碎
-        $poSuiPos = Utils::getIndexByZhi(self::PO_SUI_PLACE[$yearZhi]);
-        $this->poSui = Star::create('破碎', $poSuiPos, Star::TYPE_OTHER);
-
         // 大耗
         $daHaoPos = Utils::getIndexByZhi(self::DA_HAO_PLACE[$yearZhi]);
         $this->daHao = Star::create('大耗', $daHaoPos, Star::TYPE_OTHER);
@@ -656,16 +682,14 @@ class Stars {
         $this->tianDe = Star::create('天德', $this->clockwiseMove('酉', $yearZhiIdx), Star::TYPE_OTHER);
 
         // 解神
-        $this->jieShen = Star::create('解神', $this->clockwiseMove('戌', $yearZhiIdx, false), Star::TYPE_OTHER);
+        $this->jieShen = Star::create('解神', Utils::getIndexByZhi(self::JIE_SHEN_PLACE[$month]), Star::TYPE_OTHER);
+        $this->nianJie = Star::create('年解', $this->clockwiseMove('戌', $yearZhiIdx, false), Star::TYPE_OTHER);
 
         // 台辅
         $this->taiFu = Star::create('台辅', $this->clockwiseMove('午', $hourZhiIdx), Star::TYPE_OTHER);
         
         // 封诰
         $this->fengGao = Star::create('封诰', $this->clockwiseMove('寅', $hourZhiIdx), Star::TYPE_OTHER);
-
-        // 蜚廉
-        $this->feiLian = Star::create('蜚廉', Utils::getIndexByZhi(self::FEI_LIAN_PLACE[$yearZhi]), Star::TYPE_OTHER);
 
         // 天官
         $this->tianGuan = Star::create('天官', Utils::getIndexByZhi(self::TIAN_GUAN_PLACE[$yearGan]), Star::TYPE_OTHER);
@@ -674,7 +698,14 @@ class Stars {
         $this->tianFu1 = Star::create('天福', Utils::getIndexByZhi(self::TIAN_FU1_PLACE[$yearGan]), Star::TYPE_OTHER);
 
         // 截空
-        $this->jieKong = Star::create('截空', Utils::getIndexByZhi(self::JIE_KONG_PLACE[$yearGan]), Star::TYPE_OTHER);
+        $jieKongZhi = self::JIE_KONG_PLACE[$yearGanIdx % 6];
+        if ($yearGanIdx % 2 == 1) {
+            $this->jieKong = Star::create('截空', Utils::getIndexByZhi($jieKongZhi[0]), Star::TYPE_OTHER);
+            $this->fuJie = Star::create('副截', Utils::getIndexByZhi($jieKongZhi[1]), Star::TYPE_OTHER);
+        } else {
+            $this->jieKong = Star::create('截空', Utils::getIndexByZhi($jieKongZhi[1]), Star::TYPE_OTHER);
+            $this->fuJie = Star::create('副截', Utils::getIndexByZhi($jieKongZhi[0]), Star::TYPE_OTHER);
+        }
 
         // 三台
         $this->sanTai = Star::create('三台', $this->clockwiseMove($this->zuoFu->getZhi(), $day - 1), Star::TYPE_OTHER);
@@ -692,16 +723,29 @@ class Stars {
         $this->tianCai = Star::create('天才', $this->clockwiseMove($this->selfPalace->getZhi(), $yearZhiIdx), Star::TYPE_OTHER);
         
         // 天寿
-        $this->tianShou = Star::create('天寿', $this->clockwiseMove($this->selfPalace->getZhi(), $yearZhiIdx), Star::TYPE_OTHER);
+        $this->tianShou = Star::create('天寿', $this->clockwiseMove($this->shenPalace->getZhi(), $yearZhiIdx), Star::TYPE_OTHER);
         
         // 天伤
-        $this->tianShang = Star::create('天伤', $this->clockwiseMove($this->selfPalace->getZhi(), 7), Star::TYPE_OTHER);
+        $this->tianShang = Star::create('天伤', $this->clockwiseMove($this->selfPalace->getZhi(), 5), Star::TYPE_OTHER);
         
         // 天使
-        $this->tianShi = Star::create('天使', $this->clockwiseMove($this->selfPalace->getZhi(), 5), Star::TYPE_OTHER);
+        $this->tianShi = Star::create('天使', $this->clockwiseMove($this->selfPalace->getZhi(), 7), Star::TYPE_OTHER);
         
         // 旬空
-        $this->xunKong = Star::create('旬空', Utils::getIndexByZhi(self::XUN_KONG_PLACE[$this->selfPalace->getGanZhi()]), Star::TYPE_OTHER);
+        $xunKongZhi = self::XUN_KONG_PLACE[$this->lunar->getYearInGanZhi()];
+        if ($this->yinYang) {
+            $this->xunKong = Star::create('旬空', Utils::getIndexByZhi($xunKongZhi[0]), Star::TYPE_OTHER);
+            $this->fuXun = Star::create('副旬', Utils::getIndexByZhi($xunKongZhi[1]), Star::TYPE_OTHER);
+        } else {
+            $this->xunKong = Star::create('旬空', Utils::getIndexByZhi($xunKongZhi[1]), Star::TYPE_OTHER);
+            $this->fuXun = Star::create('副旬', Utils::getIndexByZhi($xunKongZhi[0]), Star::TYPE_OTHER);
+        }
+        
+        // 天厨
+        $this->tianChu = Star::create('天厨', Utils::getIndexByZhi(self::TIAN_CHU_PLACE[$yearGan]), Star::TYPE_OTHER);
+        
+        // 天空
+        $this->tianKong = Star::create('天空', $this->clockwiseMove('丑', $yearZhiIdx), Star::TYPE_OTHER);
     }
 
     public function getOtherStars() {
@@ -865,6 +909,37 @@ class Stars {
         return $this->suiQianStars;
     }
 
+
+    private function setLiuYaoStars() {
+        $yearZhi = $this->lunar->getYearZhi();
+        $yearIdx = $this->lunar->getYearZhiIndex();
+
+        // 蜚廉
+        $this->feiLian = Star::create('蜚廉', Utils::getIndexByZhi(self::FEI_LIAN_PLACE[$yearZhi]), Star::TYPE_LIU_YAO);
+
+        // 破碎
+        $poSuiPos = Utils::getIndexByZhi(self::PO_SUI_PLACE[$yearZhi]);
+        $this->poSui = Star::create('破碎', $poSuiPos, Star::TYPE_LIU_YAO);
+
+        // 华盖
+        $huaGaiPos = Utils::getIndexByZhi(self::HUA_GAI_PLACE[$yearZhi]);
+        $this->huaGai = Star::create('华盖', $huaGaiPos, Star::TYPE_LIU_YAO);
+
+        // 咸池
+        $xianChiPos = Utils::getIndexByZhi(self::XIAN_CHI_PLACE[$this->lunar->getYearZhi()]);
+        $this->xianChi = Star::create('咸池', $xianChiPos, Star::TYPE_LIU_YAO);
+
+        // 月德
+        $this->yueDe = Star::create('月德', $this->clockwiseMove('巳', $yearIdx), Star::TYPE_LIU_YAO);
+
+        // 龙德
+        $this->longDe1 = Star::create('龙德', $this->clockwiseMove('未', $yearIdx), Star::TYPE_LIU_YAO);
+    }
+
+    public function getLiuYaoStars() {
+        return $this->liuYaoStars;
+    }
+
     /**
      * 获取所有星曜
      */
@@ -878,6 +953,7 @@ class Stars {
             'changShengStars' => $this->formatToArray($this->changShengStars),
             'jiangQianStars' => $this->formatToArray($this->jiangQianStars),
             'suiQianStars' => $this->formatToArray($this->suiQianStars),
+            'liuYaoStars' => $this->formatToArray($this->liuYaoStars),
         ];
     }
 
@@ -927,7 +1003,6 @@ class Stars {
             $this->luCun,
             $this->hongLuan,
             $this->tianXi,
-            $this->xianChi,
             $this->tianYao,
             $this->tianXing,
             $this->yinSha,
@@ -937,20 +1012,17 @@ class Stars {
             $this->tianXu,
             $this->longChi,
             $this->fengGe,
-            $this->huaGai,
             $this->jieSha,
-            $this->guChen,
-            $this->guaSu,
-            $this->poSui,
             $this->daHao,
             $this->tianDe,
             $this->jieShen,
+            $this->nianJie,
             $this->taiFu,
             $this->fengGao,
-            $this->feiLian,
             $this->tianGuan,
             $this->tianFu1,
             $this->jieKong,
+            $this->fuJie,
             $this->sanTai,
             $this->baZuo,
             $this->tianGui,
@@ -960,6 +1032,11 @@ class Stars {
             $this->tianShang,
             $this->tianShi,
             $this->xunKong,
+            $this->fuXun,
+            $this->tianChu,
+            $this->tianKong,
+            $this->guChen,
+            $this->guaSu,
 
             $this->boShi,
             $this->liShi,
@@ -1012,6 +1089,13 @@ class Stars {
             $this->tianDe1,
             $this->diaoKe,
             $this->bingFu2,
+
+            $this->poSui,
+            $this->huaGai,
+            $this->feiLian,
+            $this->xianChi,
+            $this->yueDe,
+            $this->longDe1,
         ];
 
         return $stars;
