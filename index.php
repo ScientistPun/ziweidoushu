@@ -5,7 +5,7 @@ use scientistpun\ziwei\ZiWeiDouShu;
 
 
 
-$searchDate = strtotime('1995-10-14');
+$searchDate = strtotime('1995-1-14');
 $searchHour = 8;
 $searchGender = false;
 

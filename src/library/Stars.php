@@ -205,7 +205,7 @@ class Stars {
     private Star $tianShi;
 
     // 天厨
-    private const TIAN_CHU_PLACE = ['甲'=>'巳', '乙'=>'午', '丙'=>'子', '丁'=>'巳', '戊'=>'午', '己'=>'申', '庚'=>'寅', '辛'=>'午', '壬'=>'酉', '癸'=>'猪'];
+    private const TIAN_CHU_PLACE = ['甲'=>'巳', '乙'=>'午', '丙'=>'子', '丁'=>'巳', '戊'=>'午', '己'=>'申', '庚'=>'寅', '辛'=>'午', '壬'=>'酉', '癸'=>'亥'];
     private Star $tianChu;
 
     // 天空
@@ -473,6 +473,7 @@ class Stars {
 
         // 判断差数的奇偶性并计算新的数字
         $move = $lack % 2 == 0 ? $move + $lack : $move - $lack;
+        if ($move < 0) $move += 12;
 
         // 紫微 从寅宫开始顺时针排列
         $pos = ($move + 1) % 12;
@@ -480,7 +481,7 @@ class Stars {
 
         // 天机 紫微逆行一格
         $tianJiPos = $pos > 0 ? $pos - 1:11;
-        $this->tianJi = Star::create('天机', $tianJiPos, Star::TYPE_MASTER); 
+        $this->tianJi = Star::create('天机', $this->clockwiseMove($this->ziWei->getZhi(), 1, false), Star::TYPE_MASTER); 
 
         // 太阳 天机逆行两格
         $sunPos = $tianJiPos - 2;
@@ -581,12 +582,10 @@ class Stars {
         $yearZhi = $this->lunar->getYearZhi();
 
         // 陀罗 在禄存后面
-        $pos = $this->luCun->getPos() == 0 ? 11:$this->luCun->getPos() - 1;
-        $this->tuoLuo = Star::create('陀罗', $pos, Star::TYPE_UNLUCKY);
+        $this->tuoLuo = Star::create('陀罗', $this->clockwiseMove($this->luCun->getZhi(), 1, false), Star::TYPE_UNLUCKY);
 
         // 擎羊 在禄存前面
-        $pos = $this->luCun->getPos() == 1 ? 0:$this->luCun->getPos() + 1;
-        $this->qingYang = Star::create('擎羊', $pos, Star::TYPE_UNLUCKY);
+        $this->qingYang = Star::create('擎羊', $this->clockwiseMove($this->luCun->getZhi(), 1), Star::TYPE_UNLUCKY);
 
         // 地劫
         $this->diJie = Star::create('地劫', $this->clockwiseMove('亥', $hourZhiIdx), Star::TYPE_UNLUCKY);
