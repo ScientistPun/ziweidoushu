@@ -124,7 +124,7 @@ class Stars {
     private Star $tianYue1;
 
     // 天巫 出生月对应宫支
-    private const TIAN_WU_PLACE  = ['巳', '申', '亥', '寅'];
+    private const TIAN_WU_PLACE  = ['寅', '亥', '巳', '申'];
     // 天巫
     private Star $tianWu;
 
@@ -646,7 +646,8 @@ class Stars {
         $this->tianYue1 = Star::create('天月', $tianYue1Pos, Star::TYPE_OTHER);
 
         // 天巫
-        $tianWuPos = Utils::getIndexByZhi(self::TIAN_WU_PLACE[($month - 1) % 4]);
+        echo $monthZhiIdx;
+        $tianWuPos = Utils::getIndexByZhi(self::TIAN_WU_PLACE[$monthZhiIdx % 4]);
         $this->tianWu = Star::create('天巫', $tianWuPos, Star::TYPE_OTHER);
 
         // 天虚
@@ -697,8 +698,8 @@ class Stars {
         $this->tianFu1 = Star::create('天福', Utils::getIndexByZhi(self::TIAN_FU1_PLACE[$yearGan]), Star::TYPE_OTHER);
 
         // 截空
-        $jieKongZhi = self::JIE_KONG_PLACE[$yearGanIdx % 6];
-        if ($yearGanIdx % 2 == 1) {
+        $jieKongZhi = self::JIE_KONG_PLACE[$yearGanIdx % 5];
+        if ($yearGanIdx % 2 == 0) {
             $this->jieKong = Star::create('截空', Utils::getIndexByZhi($jieKongZhi[0]), Star::TYPE_OTHER);
             $this->fuJie = Star::create('副截', Utils::getIndexByZhi($jieKongZhi[1]), Star::TYPE_OTHER);
         } else {
@@ -732,7 +733,7 @@ class Stars {
         
         // 旬空
         $xunKongZhi = self::XUN_KONG_PLACE[$this->lunar->getYearInGanZhi()];
-        if ($this->yinYang) {
+        if ($yearGanIdx % 2 == 0) {
             $this->xunKong = Star::create('旬空', Utils::getIndexByZhi($xunKongZhi[0]), Star::TYPE_OTHER);
             $this->fuXun = Star::create('副旬', Utils::getIndexByZhi($xunKongZhi[1]), Star::TYPE_OTHER);
         } else {
