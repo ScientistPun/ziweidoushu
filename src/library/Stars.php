@@ -646,7 +646,6 @@ class Stars {
         $this->tianYue1 = Star::create('天月', $tianYue1Pos, Star::TYPE_OTHER);
 
         // 天巫
-        echo $monthZhiIdx;
         $tianWuPos = Utils::getIndexByZhi(self::TIAN_WU_PLACE[$monthZhiIdx % 4]);
         $this->tianWu = Star::create('天巫', $tianWuPos, Star::TYPE_OTHER);
 
